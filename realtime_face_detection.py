@@ -5,6 +5,7 @@ from keras.models import model_from_json
 import numpy as np
 import os
 
+# Print current working directory
 os.chdir(os.path.dirname(__file__))
 print("Current working directory: ", os.getcwd())
 

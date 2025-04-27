@@ -15,12 +15,19 @@ Given a detected face, our model classifies the expression (e.g., happy, sad).
 **Evaluation:**
 - **Face Detection:** We evaluate whether all faces in each frame are correctly detected and blurred.
 - **Facial Expression Recognition:** We evaluate using classification metrics such as accuracy and precision. (See `test.ipynb` for detailed evaluation.)
-
 ---
 
 ## Environment Setup
 
 The project environment is managed using **rye** or **uv**.
+
+**Clone the Repository**
+
+First, clone the repository:
+
+```bash
+git clone https://github.com/Real-Zzy/face-expression-detection-project.git
+```
 
 **Preparation Steps:**
 1. Install **CMake** on your machine (required for compiling `dlib & face-recognition`).
@@ -53,7 +60,7 @@ python retina_face_detection.py
 ```
 
 ### Example — Detection Result
-![Face Detection Example](images/example.png)
+![Face Detection Example](images/face_detection_example.png)
 
 ---
 
@@ -66,6 +73,10 @@ For expression classification we use:
 
 The model is trained for **50 epochs** on **FER-2013**.  
 Training logs and evaluation are in **`test.ipynb`**.
+
+### Example — Estimation Result
+![Face Detection Example](images/facial_expression_example.png)
+
 
 ---
 
