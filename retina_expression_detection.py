@@ -8,25 +8,39 @@ import torch
 import torch.nn as nn
 from retinaface import RetinaFace
 
-
+# Print the current working directory
 os.chdir(os.path.dirname(__file__))
 print("Current working directory: ", os.getcwd())
 
+# Load the video file
 webcam_video_stream = cv2.VideoCapture("videos/speed_cr7.mp4")
+
+# ---- Load Facial Expression Recognition Model ---- #
 
 # face_exp_model = model_from_json(open("models/facial_expression_model_structure.json", "r").read())
 # face_exp_model.load_weights('models/facial_expression_model_weights.h5')
+
+# Define number of training epochs
 epochs=50
+
+# Load pre-trained ResNet50 model (fine-tuned for 7 emotion classes)
 model_path = f"models/fer_resnet50_epoch{epochs}.pth"
 face_exp_model = models.resnet50(weights="IMAGENET1K_V2")
+
+# Adjust input and output layers for emotion classification
 face_exp_model.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)  # already 3-ch
 num_ftrs = face_exp_model.fc.in_features
 face_exp_model.fc  = nn.Linear(num_ftrs, 7) 
+
+# Load saved weights
 face_exp_model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))
+
+# Move model to available device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 face_exp_model = face_exp_model.to(device)
 face_exp_model.eval()
 
+# Define input preprocessing transformations
 transform = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Grayscale(num_output_channels=3),   # 1→3 channels
@@ -36,10 +50,12 @@ transform = transforms.Compose([
                          [0.229, 0.224, 0.225]),
 ])
 
+# Define emotion labels
 emotions_label = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
 
 all_face_locations = []
 
+# ---- Start Processing Video Frames ---- #
 while True:
     ret, current_frame = webcam_video_stream.read()
     current_frame_small = cv2.resize(current_frame, (0, 0), fx=0.8, fy=0.8)
